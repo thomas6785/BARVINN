@@ -21,3 +21,4 @@ synthesis/
 *.hex
 *.obj
 .DS_Store
+.venv/
