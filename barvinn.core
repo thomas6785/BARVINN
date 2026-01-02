@@ -125,10 +125,10 @@ parameters:
         paramtype : vlogdefine
     firmware:
         datatype  : file
-        default   : /users/hemmat/MyRepos/BARVINN/csrc/conv/build/conv_text.hex
+        default   : /home/tudentstudent/BARVINN_3/BARVINN/csrc/conv/build/conv_text.hex
         paramtype : plusarg
     rodata:
         datatype  : file
-        default   : /users/hemmat/MyRepos/BARVINN/csrc/conv/build/conv_data.hex
+        default   : /home/tudentstudent/BARVINN_3/BARVINN/csrc/conv/build/conv_data.hex
         paramtype : plusarg
 
