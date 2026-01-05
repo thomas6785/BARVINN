@@ -22,3 +22,4 @@ synthesis/
 *.obj
 .DS_Store
 .venv/
+*.o
