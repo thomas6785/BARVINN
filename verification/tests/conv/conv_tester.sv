@@ -10,17 +10,26 @@ class conv_tester extends barvinn_testbench_base;
     endfunction
 
     task tb_setup();
-        logger.print_banner("Testbench Setup Phase");
-        // Weight tensor that was written into MVU rams
-        // w_data_q_t w_data;
-        // write_weight_data("/users/hemmat/MyRepos/BARVINN/weight.txt", 0, 0, w_data);
-        write_weight_data("/users/hemmat/MyRepos/BARVINN/verification/tests/conv/weight.hex", 0, 0);
-        write_input_data("/users/hemmat/MyRepos/BARVINN/verification/tests/conv/input.hex", 0, 0);
+        logger.print_banner("Testbench Setup Phase (conv_tester)");
         // Put DUT to reset and relax memory interface
         logger.print("Initializing MVUs...");
         super.mvu_init();
         logger.print("Initializing RISC-V cores ...");
         super.pito_init();
+
+        // Weight tensor that was written into MVU rams
+        // w_data_q_t w_data;
+        logger.print("Loading weight data");
+        write_weight_data("/home/tudentstudent/BARVINN_3/conv1.weight.hex", 0, 0);
+        logger.print("Loading input data");
+        write_input_data("/home/tudentstudent/BARVINN_3/input.hex", 0, 0);
+
+        // Reset DUT (memory is not reset)
+        super.mvu_ext_intf.rst_n <= 1'b0;
+        super.pito_ext_intf.rst_n    <= 1'b0;
+        repeat (2) @(posedge super.mvu_ext_intf.clk);
+        super.mvu_ext_intf.rst_n <= 1'b1;
+        super.pito_ext_intf.rst_n    <= 1'b1;
         logger.print("Setup Phase Done ...");
     endtask
 
@@ -80,6 +89,7 @@ class conv_tester extends barvinn_testbench_base;
 
     // Back-door function to read MVU data memory
     function int peekData(int mvu, int bank, int addr);
+        logger.print($sformatf("peekData: mvu=%0d, bank=%0d, addr=%0d", mvu, bank, addr));
         case (mvu)
             0 : begin
                 case (bank)
@@ -439,16 +449,13 @@ class conv_tester extends barvinn_testbench_base;
         int mem_val;
         if (fd)  begin logger.print($sformatf("%s was opened successfully : %0d", output_file, fd)); end
         else     begin logger.print($sformatf("%s was NOT opened successfully : %0d", output_file, fd)); $finish(); end
+        logger.print($sformatf("dump_output_data: mvu_num=%0d, base_addr=%0h, words_to_read=%0d", mvu_num, base_addr, words_to_read));
         logger.print($sformatf("=> Reading output ram ..."));
         while (word_cnt<words_to_read) begin
             // data_q.push_back(temp_dat);
             // readData(int mvu, logic unsigned [BDBANKA-1 : 0] addr, ref logic unsigned [BDBANKW-1 : 0] word, ref logic unsigned [NMVU-1 : 0] grnt);
             // readData(mvu, addr, temp_dat, grnt);
-            if (addr>1023) begin
-                bank_num = 0;
-            end else begin
-                bank_num = addr%1024;
-            end
+            bank_num = addr / 1024;
             // mem_val = get_mvu_bank_val(mvu_num, bank_num, addr);
             mem_val = peekData(mvu_num, bank_num, addr);
             logger.print($sformatf("[%4h]: 0x%16h", addr, mem_val), "INFO", verbosity);
