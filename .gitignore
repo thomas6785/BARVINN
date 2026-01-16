@@ -25,3 +25,4 @@ synthesis/
 *.i
 *.s
 *.wcfg
+.venv/
