@@ -21,3 +21,7 @@ synthesis/
 *.hex
 *.obj
 .DS_Store
+*.o
+*.i
+*.s
+*.wcfg
