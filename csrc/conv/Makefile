@@ -19,8 +19,8 @@ OBJS = $$(find $(OUT_DIR) -name "*.o")
 # Compiler Flags
 #=================================================================================
 
-LDFLAGS = -nostartfiles  -nostdlib  -T$(ROOT_DIR)/common/link.ld -Map=$(OUT_DIR)/$(PROJ).map
-CCFLAGS = -march=rv32i -std=gnu99 -ffast-math -fno-builtin-printf
+LDFLAGS = -nostdlib  -T$(ROOT_DIR)/common/link.ld -Map=$(OUT_DIR)/$(PROJ).map
+CCFLAGS = -march=rv32i_zicsr -save-temps -std=gnu99 -ffast-math -fno-builtin-printf
 #=================================================================================
 # Project Defines
 #=================================================================================
