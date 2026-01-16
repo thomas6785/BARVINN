@@ -20,9 +20,9 @@ class conv_tester extends barvinn_testbench_base;
         // Weight tensor that was written into MVU rams
         // w_data_q_t w_data;
         logger.print("Loading weight data");
-        write_weight_data("/home/tudentstudent/BARVINN_3/conv1.weight.hex", 0, 0);
+        write_weight_data("/home/tudentstudent/BARVINN_3/random_3x3_kernel_8bits.bin", 0, 0);
         logger.print("Loading input data");
-        write_input_data("/home/tudentstudent/BARVINN_3/input.hex", 0, 0);
+        write_input_data("/home/tudentstudent/BARVINN_3/random_10x10_image.bin", 0, 0);
 
         // Reset DUT (memory is not reset)
         super.mvu_ext_intf.rst_n <= 1'b0;
