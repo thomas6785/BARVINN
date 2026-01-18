@@ -193,20 +193,29 @@ class barvinn_testbench_base extends BaseObj;
         pito_ext_intf.imem_addr    = {`PITO_INSTR_ADDR_WIDTH{1'b0}};
         pito_ext_intf.imem_wdata   = 32'b0;
 
-        @(posedge pito_ext_intf.clk);
-        pito_ext_intf.rst_n = 1'b0;
-        @(posedge pito_ext_intf.clk);
-
-        this.write_instr_to_ram(1, 0);
-        this.write_data_to_ram(1, 0);
-
-        @(posedge pito_ext_intf.clk);
-        pito_ext_intf.rst_n = 1'b1;
-        @(posedge pito_ext_intf.clk);
+        @(posedge pito_ext_intf.clk); // wait a clock cycle to ensure a negedge occurs in rst_n
+        pito_ext_intf.rst_n        = 1'b0; // active-low reset - start with reset so we can set things up before releasing
+        @(posedge pito_ext_intf.clk); // wait a clock cycle to ensure no negedge occurs when we're setting up memory
     endtask
 
     task mvu_init();
-
+        mvu_ext_intf.ic_clr      = 0; // interconnect clear (TODO also not clear what use this is? the interconnect is internal and is cleared by the global reset, no need for a dedicated reset?)
+        mvu_ext_intf.shacc_clr   = 0; // shifter-accumulator clear (TODO this should be internal... why is it external???)
+        mvu_ext_intf.wrw_addr    = 0; // write weights address
+        mvu_ext_intf.wrw_word    = 0; // write weights data
+        mvu_ext_intf.wrw_en      = 0; // write weights enable
+        mvu_ext_intf.rdc_en      = 0; // read data enable (note "c" stands for controller here - the data can also be read from the MVU or from the interconnect)
+        mvu_ext_intf.rdc_addr    = 0; // read data address
+        mvu_ext_intf.wrc_en      = 0; // write data enable
+        mvu_ext_intf.wrc_addr    = 0; // write data address
+        mvu_ext_intf.wrc_word    = 0; // write data word
+        mvu_ext_intf.wrs_en      = 0; // write scaler enable
+        mvu_ext_intf.wrs_addr    = 0; // write scaler address
+        mvu_ext_intf.wrs_word    = 0; // write scaler word
+        mvu_ext_intf.wrb_en      = 0; // write bias enable
+        mvu_ext_intf.wrb_addr    = 0; // write bias address
+        mvu_ext_intf.wrb_word    = 0; // write bias word
+        // note each read and write has a 'grant' signal which has been ignored for the test cases - assuming no conflicts
     endtask
 
     virtual task tb_setup();

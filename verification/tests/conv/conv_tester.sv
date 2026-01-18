@@ -12,24 +12,22 @@ class conv_tester extends barvinn_testbench_base;
     task tb_setup();
         logger.print_banner("Testbench Setup Phase (conv_tester)");
         // Put DUT to reset and relax memory interface
-        logger.print("Initializing MVUs...");
+        logger.print("Initializing MVUs..."); // Reset MVU and initialise external interface signals
         super.mvu_init();
-        logger.print("Initializing RISC-V cores ...");
+        logger.print("Initializing RISC-V cores ..."); // Reset Pito and initialise external interface signals
         super.pito_init();
+        // global reset is held low (active) to prevent execution while we are preparing testcase (will be set by run())
 
-        // Weight tensor that was written into MVU rams
-        // w_data_q_t w_data;
+        // Load instructions and data into Pito RAMs (happens instantly)
+        super.write_instr_to_ram(1, 0); // currently using a backdoor to force the RAM values to write instructions and data
+        super.write_data_to_ram(1, 0);
+
+        // Load weights and input data into MVU RAMs (uses ext interface, takes time)
         logger.print("Loading weight data");
         write_weight_data("/home/tudentstudent/BARVINN_3/random_3x3_kernel_8bits.bin", 0, 0);
         logger.print("Loading input data");
         write_input_data("/home/tudentstudent/BARVINN_3/random_10x10_image.bin", 0, 0);
 
-        // Reset DUT (memory is not reset)
-        super.mvu_ext_intf.rst_n <= 1'b0;
-        super.pito_ext_intf.rst_n    <= 1'b0;
-        repeat (2) @(posedge super.mvu_ext_intf.clk);
-        super.mvu_ext_intf.rst_n <= 1'b1;
-        super.pito_ext_intf.rst_n    <= 1'b1;
         logger.print("Setup Phase Done ...");
     endtask
 
@@ -470,7 +468,7 @@ class conv_tester extends barvinn_testbench_base;
 
     task run();
         // Kick start the MVU and pito
-        // super.run();
+        super.run(); // releases the rst_n signal so Pito begins
         fork
             this.monitor.run();
             // monitor_regs();
