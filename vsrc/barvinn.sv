@@ -10,15 +10,10 @@ module barvinn #(
     pito_soc_ext_interface pito_ext_intf,
     MVU_EXT_INTERFACE      mvu_ext_intf
 );
-    localparam MVU_MAX_DATA_PREC      = 16;  // Maximum supported data length in MVU
-
-    // // mvu done signal, not used for now
-    // logic [        NMVU-1  : 0] mvu_done; // mvu output done signal
-    // assign mvu_done = mvu_ext_intf.done;
-
-    // connecting global reset
+    // Connecting global reset
     assign mvu_ext_intf.rst_n = pito_ext_intf.rst_n;
 
+    // Connet interrupt
     assign pito_ext_intf.mvu_irq = mvu_ext_intf.irq;
     
     // TODO provide data transposer for MVU memory access
@@ -33,5 +28,4 @@ module barvinn #(
                        .apb(apb_interface.Slave));
     pito_soc soc(.ext_intf(pito_ext_intf.soc_ext), 
                  .mvu_apb(apb_interface.Master));
-
 endmodule
