@@ -27,3 +27,4 @@ synthesis/
 *.wcfg
 .venv/
 launch.json
+fusesoc.conf
