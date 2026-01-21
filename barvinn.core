@@ -7,9 +7,7 @@ filesets:
         file_type: systemVerilogSource
         files:
             - deps/common_cells/src/cf_math_pkg.sv
-            - deps/apb/include/apb/assign.svh: {is_include_file: True}
             - deps/apb/include/apb/typedef.svh: {is_include_file: True}
-            - deps/apb/src/apb_test.sv
             - deps/apb/src/apb_pkg.sv
             - deps/apb/src/apb_intf.sv
             - deps/tech_cells_generic/src/rtl/tc_sram.sv
