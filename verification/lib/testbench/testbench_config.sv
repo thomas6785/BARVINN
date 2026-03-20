@@ -15,15 +15,15 @@ class tb_config extends BaseObj;
         if ($value$plusargs("firmware=%s", this.firmware)) begin
             logger.print($sformatf("Using %s as firmware", firmware));
         end else begin
-            logger.print($sformatf("Expecting a command line argument %s", firmware), "ERROR");
-            this.firmware = "/home/tudentstudent/BARVINN_3/conv_text.hex"; // TODO remove this temporary hardcode
+            //logger.print($sformatf("Expecting a command line argument %s", firmware), "ERROR");
+            this.firmware = "/home/tudentstudent/BARVINN/BARVINN/csrc/conv/build/conv_text.hex"; // TODO remove this temporary hardcode
         end
 
         if ($value$plusargs("rodata=%s", this.rodata)) begin
             logger.print($sformatf("Using %s as read only data", rodata));
         end else begin
-            logger.print($sformatf("Expecting a command line argument %s", rodata), "ERROR");
-            this.rodata = "/home/tudentstudent/BARVINN_3/conv_data.hex"; // TODO remove this temporary hardcode
+            //logger.print($sformatf("Expecting a command line argument %s", rodata), "ERROR");
+            this.rodata = "/home/tudentstudent/BARVINN/BARVINN/csrc/conv/build/conv_data.hex"; // TODO remove this temporary hardcode
         end
 
         if ($value$plusargs("testname=%s", this.testname)) begin
