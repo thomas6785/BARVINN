@@ -24,9 +24,9 @@ class conv_tester extends barvinn_testbench_base;
 
         // Load weights and input data into MVU RAMs (uses ext interface, takes time)
         logger.print("Loading weight data");
-        write_weight_data("/home/tudentstudent/BARVINN_3/random_3x3_kernel_8bits.bin", 0, 0);
+        write_weight_data("/home/tudentstudent/BARVINN/BARVINN/kernel_bin.txt", 0, 0);
         logger.print("Loading input data");
-        write_input_data("/home/tudentstudent/BARVINN_3/random_10x10_image.bin", 0, 0);
+        write_input_data("/home/tudentstudent/BARVINN/BARVINN/input_bin.txt", 0, 0);
 
         logger.print("Setup Phase Done ...");
     endtask
@@ -86,8 +86,8 @@ class conv_tester extends barvinn_testbench_base;
 
 
     // Back-door function to read MVU data memory
-    function int peekData(int mvu, int bank, int addr);
-        logger.print($sformatf("peekData: mvu=%0d, bank=%0d, addr=%0d", mvu, bank, addr));
+    function longint peekData(int mvu, int bank, int addr);
+        //logger.print($sformatf("peekData: mvu=%0d, bank=%0d, addr=%0d", mvu, bank, addr));
         case (mvu)
             0 : begin
                 case (bank)
@@ -444,7 +444,7 @@ class conv_tester extends barvinn_testbench_base;
         logic [BDBANKA-1 : 0] addr = base_addr;
         int word_cnt = 0;
         int bank_num = 0;
-        int mem_val;
+        longint mem_val;
         if (fd)  begin logger.print($sformatf("%s was opened successfully : %0d", output_file, fd)); end
         else     begin logger.print($sformatf("%s was NOT opened successfully : %0d", output_file, fd)); $finish(); end
         logger.print($sformatf("dump_output_data: mvu_num=%0d, base_addr=%0h, words_to_read=%0d", mvu_num, base_addr, words_to_read));
@@ -455,7 +455,7 @@ class conv_tester extends barvinn_testbench_base;
             // readData(mvu, addr, temp_dat, grnt);
             bank_num = addr / 1024;
             // mem_val = get_mvu_bank_val(mvu_num, bank_num, addr);
-            mem_val = peekData(mvu_num, bank_num, addr);
+            mem_val = peekData(mvu_num, bank_num, addr % 1024);
             logger.print($sformatf("[%4h]: 0x%16h", addr, mem_val), "INFO", verbosity);
             $fwrite(fd,"%16h\n", mem_val);
             addr += 1;
@@ -480,7 +480,7 @@ class conv_tester extends barvinn_testbench_base;
         string output_file = "result.hex";
         super.report();
         logger.print($sformatf("dumping results into %s ...", output_file));
-        dump_output_data(output_file, 0, 0, 4096, utils::VERB_LOW);
+        dump_output_data(output_file, 0, 0, 22592, utils::VERB_LOW);
     endtask
 
 endclass
