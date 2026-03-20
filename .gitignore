@@ -28,3 +28,4 @@ synthesis/
 .venv/
 launch.json
 fusesoc.conf
+csrc/*/build
