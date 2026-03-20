@@ -166,12 +166,12 @@ class barvinn_testbench_base extends BaseObj;
             @(posedge pito_ext_intf.clk);
             pito_ext_intf.imem_we = 1'b1;
             @(posedge pito_ext_intf.clk);
-            for (int addr=0; addr<instr_q.size(); addr++) begin
+            for (int addr=0; addr<this.instr_q.size(); addr++) begin
                 @(posedge pito_ext_intf.clk);
-                pito_ext_intf.imem_wdata = instr_q[addr];
+                pito_ext_intf.imem_wdata = this.instr_q[addr];
                 pito_ext_intf.imem_addr = addr;
                 if(log_to_console) begin
-                    logger.print($sformatf("[%4d]: 0x%8h     %s", addr, instr_q[addr], rv32_utils::get_instr_str(rv32i_dec.decode_instr(instr_q[addr]))));
+                    logger.print($sformatf("[%4d]: 0x%8h     %s", addr, this.instr_q[addr], rv32_utils::get_instr_str(rv32i_dec.decode_instr(instr_q[addr]))));
                 end
             end
             @(posedge pito_ext_intf.clk);
