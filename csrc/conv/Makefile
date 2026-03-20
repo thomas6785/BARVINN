@@ -42,9 +42,13 @@ CPP = $(CROSS)-cpp
 all: prep runtime $(SRC_OBJS)
 	$(LD) $(LDFLAGS) -o $(OUT_DIR)/$(PROJ).elf $(OBJS)
 	$(OD) -D $(OUT_DIR)/$(PROJ).elf > $(OUT_DIR)/$(PROJ).obj
-	$(OC) -O binary $(OUT_DIR)/$(PROJ).elf $(OUT_DIR)/$(PROJ).text --only-section .init --only-section .text
+	$(OC) --only-section .init --only-section .text $(OUT_DIR)/$(PROJ).elf $(OUT_DIR)/$(PROJ)_text.elf
+	$(OC) -O binary $(OUT_DIR)/$(PROJ)_text.elf $(OUT_DIR)/$(PROJ).text
+	$(OD) -d -S -l $(OUT_DIR)/$(PROJ)_text.elf > $(OUT_DIR)/$(PROJ)_text.lst
 	python3 $(COMMON_DIR)/makehex.py $(OUT_DIR)/$(PROJ).text 8192 > $(OUT_DIR)/$(PROJ)_text.hex
-	$(OC) -O binary $(OUT_DIR)/$(PROJ).elf $(OUT_DIR)/$(PROJ).data --only-section .rodata --only-section .sdata  --only-section .sdata* --only-section .sbss* --only-section .bss 
+	$(OC) --only-section .rodata --only-section .sdata --only-section .sdata* --only-section .sbss* --only-section .bss $(OUT_DIR)/$(PROJ).elf $(OUT_DIR)/$(PROJ)_data.elf
+	$(OC) -O binary $(OUT_DIR)/$(PROJ)_data.elf $(OUT_DIR)/$(PROJ).data
+	$(OD) -D -S -l $(OUT_DIR)/$(PROJ)_data.elf > $(OUT_DIR)/$(PROJ)_data.lst
 	python3 $(COMMON_DIR)/makehex.py $(OUT_DIR)/$(PROJ).data 8192 > $(OUT_DIR)/$(PROJ)_data.hex
 
 runtime:
